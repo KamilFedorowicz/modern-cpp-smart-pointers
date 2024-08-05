@@ -1,6 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <stdexcept>
+#include <cassert>
 
 using namespace std;
 
@@ -146,12 +148,94 @@ void exampleResource()
     
 }
 
+// error handing
+void mightGoWrong()
+{
+    bool error1 = false;
+    bool error2 = true;
+    
+    // if err1 is true then it throws the run time error exception.
+    // if err2 is true then other error
+    if(error1)
+    {
+        throw runtime_error("error1 is true");
+    }
+    if(error2)
+    {
+        throw logic_error("error2 is true");
+    }
+
+    
+}
+
+void exceptions()
+{
+    try
+    {
+        //throws the runtime error since error1 is true
+        mightGoWrong();
+        // mightGoWrong throws an exception
+    }
+    catch(const runtime_error& e)
+    {
+        // cout and cerr are the same, but looks like its the same
+        // for error reporting cerr is preferred because the output is given immediately
+        cerr << "Runtime error: " << e.what() << std::endl;
+    }
+    catch(const logic_error& e)
+    {
+        cerr << "Logic error: " << e.what() << endl;
+    }
+    // all-handler catch, catches any exception different than the previous ones
+    catch(...)
+    {
+        cerr << "other error from (...)" << endl;
+    }
+    
+}
+
+enum ErrorCode{
+    SUCCESS,
+    ERROR_FILE_NOT_FOUND,
+    ERROR_ACCESS_DENIED
+};
+
+ErrorCode readFile(const string& filename)
+{
+    return ERROR_ACCESS_DENIED;
+}
+
+void errorCodes()
+{
+    ErrorCode result = readFile("file.txt");
+    if(result!=SUCCESS)
+    {
+        // throws a number corresponding to the enum.
+        cerr << "Error occurred: " << result << endl;
+    }
+    else
+    {
+        cout << "File read successfully." << endl;
+    }
+}
+
+void process(int value)
+{
+    // assert checks if the condition is true. if it is false then it calls the standard error message and aborts the program.
+    assert(value>0);
+    cout << "processing value: " << value << endl;
+}
+
+void assertions()
+{
+    process(10);
+}
 
 int main(int argc, const char * argv[]) {
 
     // c++ 11: 1. smart pointers; 2. move semantics
     
-    exampleResource();
+    assertions();
     
     return 0;
 }
